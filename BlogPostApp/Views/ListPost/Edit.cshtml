@@ -1,0 +1,77 @@
+﻿@model BlogPostApp.ViewModel.EditBlogViewModel
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2>Edit Blog</h2>
+
+
+@using (Html.BeginForm("Edit", "ListPost", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.BlogId)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Image, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <img src="~/Image/@Model.ImageName" width="200" height="200" />
+                <input type="file" name="Image" id="fileName" accept="image/x-png,image/gif,image/jpeg" onchange="validateFileType()" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Content, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.Content, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Content, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <label id="ErrorLbl" class="text-danger control-label"></label>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" id="SubmitBtn" class="btn btn-default" />
+            </div>
+        </div>
+
+
+    </div>
+
+}
+
+
+<script type="text/javascript">
+    function validateFileType() {
+        var fileName = document.getElementById("fileName").value;
+        var fileSize = Math.round(document.getElementById("fileName").files.item(0).size / 1024);
+        var idxDot = fileName.lastIndexOf(".") + 1;
+        var extFile = fileName.substr(idxDot, fileName.length).toLowerCase();
+        if ((extFile == "jpg" || extFile == "jpeg" || extFile == "png" || extFile == "gif") && fileSize < 5120) {
+            document.getElementById("SubmitBtn").disabled = false;
+            document.getElementById("ErrorLbl").innerHTML = "";
+        } else {
+            document.getElementById("SubmitBtn").disabled = true;
+            document.getElementById("ErrorLbl").innerHTML = "Only jpg/jpeg,png and gif files are allowed!";
+        }
+    }
+</script>
+
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
